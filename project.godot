@@ -11,8 +11,20 @@ config_version=5
 [application]
 
 config/name="ReBound"
+run/main_scene="uid://t6npbkmne5le"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*uid://381thysp02di"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="viewport"
+window/stretch/scale_mode="integer"
 
 [physics]
 
@@ -20,6 +32,7 @@ config/icon="res://icon.svg"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
