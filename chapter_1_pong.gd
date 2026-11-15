@@ -213,20 +213,32 @@ func _finish_final(won: bool) -> void:
 	ended = true
 	ball.set_physics_process(false)
 	opponent.set_physics_process(false)
+
 	var ui := CanvasLayer.new()
 	add_child(ui)
+
 	var shade := ColorRect.new()
 	shade.color = Color("0b0925")
 	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ui.add_child(shade)
+
 	var message := Label.new()
-	message.text = "THE GAME DIDN'T CHANGE. I DID.\nYOU WON — RE:BOUND" if won else "NOT THE END.\nPRESS R TO TRY AGAIN"
+	
+	if won:
+		message.text = ("NOT THE END.\nPRESS R TO TRY AGAIN")
+	else: 
+		message.text = ("THE GAME DIDN'T CHANGE. I DID.\nYOU WON — RE:BOUND")
+
 	message.add_theme_color_override("font_color", Color("ffe36e"))
 	message.add_theme_font_size_override("font_size", 30)
 	message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	message.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	message.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	shade.add_child(message)
+
+	# Wait 4 seconds, then move to the cutscene
+	await get_tree().create_timer(4.0).timeout
+	get_tree().change_scene_to_file("res://cutscene.tscn")
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if final_round and ended and event is InputEventKey and event.pressed and event.keycode == KEY_R:

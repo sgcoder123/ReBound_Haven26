@@ -4,7 +4,7 @@ signal shattered
 
 @export var is_player := true
 @export var speed := 450.0
-@export var ai_speed := 600.0
+@export var ai_speed := 650.0
 @export var max_hits := 5
 @export var top_bound := 60.0
 @export var bottom_bound := 600.0

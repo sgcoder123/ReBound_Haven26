@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://r7xec1kgqrb4"]
+
+[ext_resource type="VideoStream" uid="uid://bxykvw5yksc36" path="res://Arcade-Gamer.ogv" id="1_8ndh1"]
+
+[node name="CutscenePlayer" type="Control" unique_id=2060654182]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=158505464]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+stream = ExtResource("1_8ndh1")
+autoplay = true
+expand = true
