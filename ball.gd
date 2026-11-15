@@ -10,6 +10,7 @@ signal hit_paddle(paddle)
 
 var speed := 0.0
 var radius := 8.0
+var hit_cooldown := 0.0
 
 func _ready() -> void:
 	var shape = $CollisionShape2D.shape
@@ -26,10 +27,19 @@ func reset_to(pos: Vector2) -> void:
 	velocity = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
+	hit_cooldown = maxf(hit_cooldown - delta, 0.0)
 	var c := move_and_collide(velocity * delta)
 	if c:
 		var other := c.get_collider()
 		if other.is_in_group("paddle"):
+			if hit_cooldown > 0.0:
+				return
+			hit_cooldown = 0.15
+	if c:
+		var other := c.get_collider()
+		print("ball hit: ", other.name, " groups: ", other.get_groups())
+		if other.is_in_group("paddle"):
+			print("paddle group OK, emitting")
 			speed = minf(speed + speed_gain, max_speed)
 			var offset := clampf((global_position.y - other.global_position.y) / other.half_height, -1.0, 1.0)
 			var dir_x := -signf(velocity.x)

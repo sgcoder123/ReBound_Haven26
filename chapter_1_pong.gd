@@ -6,7 +6,8 @@ const PER_HIT := 0.02
 @onready var player: CharacterBody2D = $PlayerPaddle
 @onready var opponent: CharacterBody2D = $OpponentPaddle
 @onready var ball: CharacterBody2D = $Ball
-@onready var score_label: Label = $ScoreLabel
+@onready var player_label: Label = $PlayerScore
+@onready var opponent_label: Label = $OpponentScore
 
 var center := Vector2.ZERO
 var screen_w := 1152.0
@@ -24,7 +25,8 @@ func _ready() -> void:
 	player.shattered.connect(on_paddle_shatter)
 	_update_score()
 	_serve(1.0)
-
+	ball.hit_paddle.connect(_on_ball_hit_paddle)
+	
 func _physics_process(_delta: float) -> void:
 	if ended or serving:
 		return
@@ -51,9 +53,11 @@ func _on_ball_hit_paddle(paddle: Node) -> void:
 		player.register_hit()
 	GameManager.fade_saturation(
 		minf(GameManager.saturation + PER_HIT, MAX_SATURATION), 0.3)
-
+	print("chapter got hit from: ", paddle.name)
+	
 func _update_score() -> void:
-	score_label.text = "%d - %d" % [player_score, opponent_score]
+	player_label.text = str(player_score)
+	opponent_label.text = str(opponent_score)
 
 func on_paddle_shatter() -> void:
 	ended = true
@@ -61,5 +65,4 @@ func on_paddle_shatter() -> void:
 	opponent.set_physics_process(false)
 	GameManager.fade_saturation(0.0, 0.1)
 	await get_tree().create_timer(1.5).timeout
-	# TODO: DialogueBox.show_line("I thought that was the end.")
 	GameManager.next_chapter()

@@ -29,10 +29,22 @@ script = ExtResource("3_j5del")
 position = Vector2(576, 324)
 scale = Vector2(4, 3.838)
 
-[node name="PlayerScore" type="Label" parent="." unique_id=2008125842]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="OpponentScore" type="Label" parent="." unique_id=2008125842]
+offset_left = 752.0
+offset_top = 51.99999
+offset_right = 792.0
+offset_bottom = 74.999985
+rotation = -0.23930804
+scale = Vector2(3, 3)
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="OpponentScore" type="Label" parent="." unique_id=2108133850]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="PlayerScore" type="Label" parent="." unique_id=2108133850]
+offset_left = 298.0
+offset_top = 27.000002
+offset_right = 338.0
+offset_bottom = 50.000004
+rotation = 0.22426498
+scale = Vector2(3, 3)
+horizontal_alignment = 1
+vertical_alignment = 1
