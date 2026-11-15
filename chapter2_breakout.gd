@@ -193,7 +193,8 @@ func _on_all_bricks_broken() -> void:
 	ended = true
 	ball.set_physics_process(false)
 	paddle.set_physics_process(false)
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(0.35).timeout
+	await _breakout_to_depth()
 	GameManager.next_chapter()
 
 # ---------- Ball ----------
@@ -214,3 +215,31 @@ func _physics_process(_delta: float) -> void:
 		return
 	if ball.global_position.y - ball.radius > get_viewport_rect().size.y:
 		_reset_ball()
+
+# The arena fractures, then collapses toward a vanishing point.
+func _breakout_to_depth() -> void:
+	var overlay := CanvasLayer.new()
+	add_child(overlay)
+	var flash := ColorRect.new()
+	flash.color = Color("ffe36e")
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.add_child(flash)
+	var t := create_tween()
+	t.tween_property(flash, "modulate:a", 0.0, 0.3)
+	await t.finished
+	var center := get_viewport_rect().size * 0.5
+	var pieces: Array[Polygon2D] = []
+	for i in range(24):
+		var piece := Polygon2D.new()
+		piece.polygon = PackedVector2Array([Vector2(-9, -6), Vector2(10, -3), Vector2(4, 9)])
+		piece.color = [Color("ff9e42"), Color("ff4fd8"), Color("8b5cf6")][i % 3]
+		piece.position = center + Vector2(randf_range(-480.0, 480.0), randf_range(-250.0, 250.0))
+		piece.z_index = 100
+		add_child(piece)
+		pieces.append(piece)
+	var collapse := create_tween().set_parallel(true)
+	for piece in pieces:
+		collapse.tween_property(piece, "position", center, 0.95).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		collapse.tween_property(piece, "scale", Vector2.ZERO, 0.95)
+	await collapse.finished

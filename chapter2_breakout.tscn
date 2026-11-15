@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://vycxgia2vu40"]
 
 [ext_resource type="Texture2D" uid="uid://rrhwv2180omo" path="res://bg3.png" id="1_f0st3"]
-[ext_resource type="Script" uid="uid://r6yws2fyxtqg" path="res://chapter2_breakout.gd" id="1_f6hli"]
+[ext_resource type="Script" uid="uid://ckuijvn2j81b4" path="res://chapter2_breakout.gd" id="1_f6hli"]
 [ext_resource type="PackedScene" uid="uid://7kiwids3wfkh" path="res://breakout_paddle.tscn" id="1_p1yfx"]
 [ext_resource type="PackedScene" uid="uid://7ddwku1ij1i4" path="res://tile.tscn" id="2_03e23"]
 [ext_resource type="PackedScene" uid="uid://dgs8k34pkaia5" path="res://ball.tscn" id="4_7bjjw"]
@@ -66,20 +66,20 @@ collision_mask = 7
 
 [node name="Ball" parent="." unique_id=1990000221 instance=ExtResource("4_7bjjw")]
 position = Vector2(588, 493)
-scale = Vector2(1.5, 1.44)
+scale = Vector2(2.25, 2.16)
 
 [node name="WallRight" type="StaticBody2D" parent="." unique_id=1909880176]
 position = Vector2(897, 343)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight" unique_id=1329698711]
-position = Vector2(-50, 0)
+position = Vector2(-102, 0)
 shape = SubResource("SegmentShape2D_u2so0")
 
 [node name="WallLeft" type="StaticBody2D" parent="." unique_id=560434285]
 position = Vector2(268, 334)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft" unique_id=374494786]
-position = Vector2(48, 0)
+position = Vector2(87, -2)
 shape = SubResource("SegmentShape2D_u2so0")
 
 [node name="WallTop" type="StaticBody2D" parent="." unique_id=445808993]

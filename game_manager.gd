@@ -5,6 +5,7 @@ const SATURATION_EFFECT := false
 
 var main: Node = null
 var chapter_index := 0
+var final_pong := false
 
 # The title screen is NOT in the chapters list
 var title_scene := "res://title_screen.tscn"
@@ -12,6 +13,7 @@ var title_scene := "res://title_screen.tscn"
 var chapters := [
 	"res://chapter1_pong.tscn",
 	"res://chapter2_breakout.tscn",
+	"res://chapter3_platformer.tscn",
 	# add the others as you build them
 ]
 
@@ -20,7 +22,7 @@ var chapters := [
 var captions := [
 	"",                                                # Chapter 1 (title -> game)
 	"I thought that was the end.",                     # entering Chapter 2
-	"",                                                # entering Chapter 3
+	"Same problem. Different me.",                     # entering Chapter 3
 	"",                                                # entering Chapter 4
 	"",                                                # entering Chapter 5
 	"After everything... I'm back where I started.",   # entering Chapter 6
@@ -39,6 +41,7 @@ func _caption_for(index: int) -> String:
 func start_game() -> void:
 	print("start_game called, main = ", main)
 	chapter_index = 0
+	final_pong = false
 	if main:
 		main.change_chapter(chapters[0], _caption_for(0), 1.0)
 	else:

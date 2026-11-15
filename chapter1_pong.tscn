@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://c8guwshsmvnsm"]
 
-[ext_resource type="Script" uid="uid://cgtmxjctjbtbc" path="res://chapter_1_pong.gd" id="1_3bnon"]
+[ext_resource type="Script" uid="uid://0yhcwmgb1opp" path="res://chapter_1_pong.gd" id="1_3bnon"]
 [ext_resource type="PackedScene" uid="uid://dgs8k34pkaia5" path="res://ball.tscn" id="1_re2vw"]
 [ext_resource type="PackedScene" uid="uid://cepcu01jd5efd" path="res://paddle.tscn" id="2_2kbyd"]
-[ext_resource type="Script" uid="uid://bodwb53apxo7m" path="res://paddle.gd" id="3_j5del"]
+[ext_resource type="Script" uid="uid://dc16qnvuyfbkm" path="res://paddle.gd" id="3_j5del"]
 [ext_resource type="Texture2D" uid="uid://cwblsxs6hjkyf" path="res://pixilart-drawing (1).png" id="5_besc8"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_besc8"]

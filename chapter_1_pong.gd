@@ -15,13 +15,19 @@ var screen_w := 1152.0
 var player_score := 0
 var opponent_score := 0
 var ended := false
+var final_round := false
 var serving := false
 var split_dir := Vector2.DOWN    # direction from half 0 to half 1
 
 func _ready() -> void:
 	screen_w = get_viewport_rect().size.x
 	center = get_viewport_rect().size / 2.0
-	GameManager.set_saturation(0.0)
+	final_round = GameManager.final_pong
+	GameManager.set_saturation(1.0)
+	if final_round:
+		opponent.ai_speed = 235.0
+		opponent.max_hits = 999
+		player.max_hits = 999
 
 	# The ball must be free to reach the side edges so a point can score
 	ball.enforce_side_bounds = false
@@ -45,10 +51,16 @@ func _physics_process(_delta: float) -> void:
 		return
 	if ball.global_position.x - ball.radius <= 0.0:
 		opponent_score += 1          # touched your (left) side: AI scores
-		_serve(-1.0)
+		if final_round and opponent_score >= 3:
+			_finish_final(false)
+		else:
+			_serve(-1.0)
 	elif ball.global_position.x + ball.radius >= screen_w:
 		player_score += 1            # touched the AI's (right) side: you score
-		_serve(1.0)
+		if final_round and player_score >= 3:
+			_finish_final(true)
+		else:
+			_serve(1.0)
 
 func _serve(dir_x: float, delay := 1.0) -> void:
 	serving = true
@@ -62,7 +74,7 @@ func _serve(dir_x: float, delay := 1.0) -> void:
 func _on_ball_hit_paddle(paddle: Node) -> void:
 	if ended:
 		return
-	if paddle == player:
+	if paddle == player and not final_round:
 		player.register_hit()
 	GameManager.fade_saturation(
 		minf(GameManager.saturation + PER_HIT, MAX_SATURATION), 0.3)
@@ -187,3 +199,26 @@ func _drop_everything(halves: Array[Node2D]) -> void:
 	bt.tween_property(ball, "position:y", floor_y, 1.5) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	bt.tween_property(ball, "position:x", ball.position.x + randf_range(-40.0, 40.0), 1.5)
+
+func _finish_final(won: bool) -> void:
+	ended = true
+	ball.set_physics_process(false)
+	opponent.set_physics_process(false)
+	var ui := CanvasLayer.new()
+	add_child(ui)
+	var shade := ColorRect.new()
+	shade.color = Color("0b0925")
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	ui.add_child(shade)
+	var message := Label.new()
+	message.text = "THE GAME DIDN'T CHANGE. I DID.\nYOU WON — RE:BOUND" if won else "NOT THE END.\nPRESS R TO TRY AGAIN"
+	message.add_theme_color_override("font_color", Color("ffe36e"))
+	message.add_theme_font_size_override("font_size", 30)
+	message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	message.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	message.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.add_child(message)
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if final_round and ended and event is InputEventKey and event.pressed and event.keycode == KEY_R:
+		GameManager.go_to_chapter(0)
