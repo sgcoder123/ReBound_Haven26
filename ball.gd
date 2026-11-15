@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 signal hit_paddle(paddle)
 
-@export var start_speed := 600.0
+@export var start_speed := 500.0
 @export var speed_gain := 25.0
 @export var max_speed := 900.0
 @export var top_bound := 60.0
@@ -17,6 +17,9 @@ var radius := 8.0
 var hit_cooldown := 0.0
 
 func _ready() -> void:
+	# The ball lives on layer 2 and collides with layer 1 (paddles, walls, bricks)
+	collision_layer = 2
+	collision_mask = 1
 	var col := find_child("CollisionShape2D", true, false) as CollisionShape2D
 	if col and col.shape is CircleShape2D:
 		radius = col.shape.radius

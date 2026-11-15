@@ -14,12 +14,16 @@ const ARENA_RIGHT := 1112.0
 
 var bricks_root: Node2D
 var launched := false
+var assembling := true
 var total_bricks := 0
 var bricks_left := 0
 var ended := false
 
 func _ready() -> void:
 	GameManager.set_saturation(0.0)
+
+	ball.bounce_bottom = false          # the bottom is a miss, not a bounce
+	ball.enforce_side_bounds = true     # side walls still contain it
 
 	bricks_root = get_node_or_null("Bricks") as Node2D
 	if bricks_root == null:
@@ -32,7 +36,101 @@ func _ready() -> void:
 		_spawn_bricks()
 	total_bricks = bricks_left
 
+	_intro()
+
+# ---------- Intro: the broken pieces fall and reconnect ----------
+
+func _intro() -> void:
+	paddle.visible = false
+	paddle.set_physics_process(false)
+	ball.visible = false
+	ball.set_physics_process(false)
+
+	await get_tree().create_timer(0.5).timeout
+	await _assemble_paddle()
+
+	paddle.visible = true
+	paddle.set_physics_process(true)
+	ball.visible = true
+	ball.set_physics_process(true)
+	assembling = false
 	_reset_ball()
+
+func _find_sprite(node: Node) -> Node2D:
+	for c in node.get_children():
+		if c is AnimatedSprite2D or c is Sprite2D:
+			return c
+	return null
+
+func _assemble_paddle() -> void:
+	var target := paddle.global_position
+	var vis := _find_sprite(paddle)
+	var tex: Texture2D = null
+	var sc := Vector2.ONE
+	if vis is AnimatedSprite2D:
+		tex = vis.sprite_frames.get_frame_texture(vis.animation, 0)
+		sc = vis.global_scale
+	elif vis is Sprite2D:
+		tex = vis.texture
+		sc = vis.global_scale
+
+	var w: float = float(paddle.get("half_width")) * 2.0   # fallback size
+	var h := 20.0
+	var halves: Array[Node2D] = []
+
+	if tex:
+		var sz := tex.get_size()
+		w = sz.x * sc.x
+		h = sz.y * sc.y
+		var left_tex := AtlasTexture.new()
+		left_tex.atlas = tex
+		left_tex.region = Rect2(0, 0, sz.x / 2.0, sz.y)
+		var right_tex := AtlasTexture.new()
+		right_tex.atlas = tex
+		right_tex.region = Rect2(sz.x / 2.0, 0, sz.x / 2.0, sz.y)
+		for t in [left_tex, right_tex]:
+			var s := Sprite2D.new()
+			s.texture = t
+			s.scale = sc
+			halves.append(s)
+	else:
+		for i in 2:
+			var p := Polygon2D.new()
+			p.polygon = PackedVector2Array([
+				Vector2(-w / 4.0, -h / 2.0), Vector2(w / 4.0, -h / 2.0),
+				Vector2(w / 4.0, h / 2.0), Vector2(-w / 4.0, h / 2.0)])
+			p.color = Color(0.9, 0.9, 0.9)
+			halves.append(p)
+
+	# Where each half ends up when the paddle is whole again
+	var targets := [target + Vector2(-w / 4.0, 0), target + Vector2(w / 4.0, 0)]
+
+	# Start above the screen, tilted, and fall to the floor
+	for i in halves.size():
+		var piece := halves[i]
+		piece.z_index = 5
+		piece.global_position = Vector2(randf_range(300.0, 850.0), -120.0)
+		piece.rotation = randf_range(-1.5, 1.5)
+		add_child(piece)
+		var land := create_tween().set_parallel(true)
+		land.tween_property(piece, "position:y", target.y + 30.0, 1.0) \
+			.set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+		land.tween_property(piece, "rotation", randf_range(-0.4, 0.4), 1.0)
+
+	await get_tree().create_timer(1.6).timeout   # they lie there for a moment
+
+	# Reconnect
+	var join: Tween
+	for i in halves.size():
+		join = create_tween().set_parallel(true)
+		join.tween_property(halves[i], "global_position", targets[i], 1.0) \
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		join.tween_property(halves[i], "rotation", 0.0, 1.0)
+	await join.finished
+	await get_tree().create_timer(0.2).timeout
+
+	for piece in halves:
+		piece.queue_free()
 
 # ---------- Bricks ----------
 
@@ -69,7 +167,7 @@ func _spawn_bricks() -> void:
 				GRID_TOP + row * (size.y + GAP)))
 
 	# Reinforced final brick, centered above the grid
-	var final_brick := _add_brick(
+	_add_brick(
 		Vector2((ARENA_LEFT + ARENA_RIGHT) / 2.0, GRID_TOP - size.y - GAP - 20.0),
 		3, Color(1.0, 0.8, 0.4))
 
@@ -109,10 +207,10 @@ func _reset_ball() -> void:
 		launched = true
 
 func _physics_process(_delta: float) -> void:
-	if ended:
+	if ended or assembling:
 		return
 	if not launched:
 		ball.global_position = paddle.global_position + Vector2(0, -40)
 		return
-	if ball.global_position.y > 700.0:
+	if ball.global_position.y - ball.radius > get_viewport_rect().size.y:
 		_reset_ball()
