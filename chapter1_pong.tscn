@@ -6,6 +6,10 @@
 [ext_resource type="Script" uid="uid://bodwb53apxo7m" path="res://paddle.gd" id="3_j5del"]
 [ext_resource type="Texture2D" uid="uid://cwblsxs6hjkyf" path="res://pixilart-drawing (1).png" id="5_besc8"]
 
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_besc8"]
+a = Vector2(2, -268)
+b = Vector2(1, 232)
+
 [node name="Chapter1Pong" type="Node2D" unique_id=539305562]
 script = ExtResource("1_3bnon")
 
@@ -48,3 +52,17 @@ rotation = 0.22426498
 scale = Vector2(3, 3)
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="WallLeft" type="Area2D" parent="." unique_id=1529285127]
+position = Vector2(268, 334)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft" unique_id=1276730435]
+position = Vector2(-229, 9)
+shape = SubResource("SegmentShape2D_besc8")
+
+[node name="WallRight" type="Area2D" parent="." unique_id=347413829]
+position = Vector2(268, 334)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight" unique_id=1549925981]
+position = Vector2(850, 13)
+shape = SubResource("SegmentShape2D_besc8")

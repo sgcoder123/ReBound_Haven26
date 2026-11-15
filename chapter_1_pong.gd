@@ -8,39 +8,44 @@ const PER_HIT := 0.02
 @onready var ball: CharacterBody2D = $Ball
 @onready var player_label: Label = $PlayerScore
 @onready var opponent_label: Label = $OpponentScore
+@onready var wall_left: Area2D = $WallLeft
+@onready var wall_right: Area2D = $WallRight
 
 var center := Vector2.ZERO
-var screen_w := 1152.0
 var player_score := 0
 var opponent_score := 0
 var ended := false
 var serving := false
 
 func _ready() -> void:
-	screen_w = get_viewport_rect().size.x
 	center = get_viewport_rect().size / 2.0
 	GameManager.set_saturation(0.0)
 	opponent.ball = ball
 	ball.hit_paddle.connect(_on_ball_hit_paddle)
 	player.shattered.connect(on_paddle_shatter)
+	wall_left.body_entered.connect(_on_wall_left_entered)
+	wall_right.body_entered.connect(_on_wall_right_entered)
 	_update_score()
 	_serve(1.0)
-	ball.hit_paddle.connect(_on_ball_hit_paddle)
-	
-func _physics_process(_delta: float) -> void:
-	if ended or serving:
+
+# Ball touched the left wall: the opponent scores
+func _on_wall_left_entered(body: Node) -> void:
+	if body != ball or ended or serving:
 		return
-	if ball.global_position.x < -20.0:        # got past the player
-		opponent_score += 1
-		_serve(-1.0)
-	elif ball.global_position.x > screen_w + 20.0:  # got past the opponent
-		player_score += 1
-		_serve(1.0)
+	opponent_score += 1
+	_serve(-1.0)   # serve toward the player
+
+# Ball touched the right wall: the player scores
+func _on_wall_right_entered(body: Node) -> void:
+	if body != ball or ended or serving:
+		return
+	player_score += 1
+	_serve(1.0)    # serve toward the opponent
 
 func _serve(dir_x: float) -> void:
 	serving = true
 	_update_score()
-	ball.reset_to(center)
+	ball.reset_to(center)   # respawn in the center, stopped
 	await get_tree().create_timer(1.0).timeout
 	if not ended:
 		ball.launch(dir_x)
@@ -53,8 +58,7 @@ func _on_ball_hit_paddle(paddle: Node) -> void:
 		player.register_hit()
 	GameManager.fade_saturation(
 		minf(GameManager.saturation + PER_HIT, MAX_SATURATION), 0.3)
-	print("chapter got hit from: ", paddle.name)
-	
+
 func _update_score() -> void:
 	player_label.text = str(player_score)
 	opponent_label.text = str(opponent_score)
