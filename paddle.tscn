@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cepcu01jd5efd"]
+
+[ext_resource type="Texture2D" uid="uid://rwehu87ym8h7" path="res://Xnip2026-11-14_17-03-17-Photoroom.png" id="1_51vkf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5x8i5"]
+size = Vector2(90.56818, 20)
+
+[node name="Paddle" type="CharacterBody2D" unique_id=761265386]
+position = Vector2(0, -4.7683716e-07)
+rotation = -1.567201
+scale = Vector2(0.46373597, 0.5001875)
+
+[node name="paddle2D" type="Sprite2D" parent="." unique_id=1402192754]
+position = Vector2(1.9908481, 0)
+scale = Vector2(0.16607542, 0.17237473)
+texture = ExtResource("1_51vkf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1632424569]
+position = Vector2(-1.0207295e-06, 1.9073486e-06)
+scale = Vector2(1.0000005, 1)
+shape = SubResource("RectangleShape2D_5x8i5")

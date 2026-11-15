@@ -6,9 +6,8 @@ extends Node
 var current_chapter: Node = null
 
 func _ready() -> void:
-	GameManager.set_saturation(0.0)
 	GameManager.main = self
-	load_chapter("res://scenes/chapters/chapter1_pong.tscn")
+	load_chapter(GameManager.chapters[0])
 
 func load_chapter(path: String) -> void:
 	if current_chapter:
@@ -17,3 +16,4 @@ func load_chapter(path: String) -> void:
 	var scene: PackedScene = load(path)
 	current_chapter = scene.instantiate()
 	chapter_container.add_child(current_chapter)
+	

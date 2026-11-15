@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dgs8k34pkaia5"]
+
+[ext_resource type="Script" uid="uid://cl2145nckas18" path="res://ball.gd" id="1_41u45"]
+[ext_resource type="Texture2D" uid="uid://c7ai03gdp8h1" path="res://Xnip2026-11-14_15-13-11-Photoroom.png" id="1_x8fbi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u2so0"]
+radius = 11.717102
+
+[node name="Ball" type="CharacterBody2D" unique_id=1990000221]
+position = Vector2(3.8146973e-06, 9.536743e-07)
+scale = Vector2(1.7095678, 1.6412048)
+script = ExtResource("1_41u45")
+
+[node name="Ball2D" type="Sprite2D" parent="." unique_id=1853981172]
+rotation = -1.5682782
+scale = Vector2(-0.016344022, 0.016706405)
+texture = ExtResource("1_x8fbi")
+offset = Vector2(42.37329, -4.8864746)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=783319562]
+position = Vector2(-7.6293945e-06, 0)
+scale = Vector2(0.4, 0.41)
+shape = SubResource("CircleShape2D_u2so0")

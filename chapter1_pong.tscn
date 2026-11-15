@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://c8guwshsmvnsm"]
+
+[ext_resource type="Script" uid="uid://cgtmxjctjbtbc" path="res://chapter_1_pong.gd" id="1_3bnon"]
+[ext_resource type="PackedScene" uid="uid://dgs8k34pkaia5" path="res://ball.tscn" id="1_re2vw"]
+[ext_resource type="PackedScene" uid="uid://cepcu01jd5efd" path="res://paddle.tscn" id="2_2kbyd"]
+[ext_resource type="Script" uid="uid://bodwb53apxo7m" path="res://paddle.gd" id="3_j5del"]
+[ext_resource type="Texture2D" uid="uid://cwblsxs6hjkyf" path="res://pixilart-drawing (1).png" id="5_besc8"]
+
+[node name="Chapter1Pong" type="Node2D" unique_id=539305562]
+script = ExtResource("1_3bnon")
+
+[node name="PixilartDrawing(1)" type="Sprite2D" parent="." unique_id=581308997]
+position = Vector2(578, 325)
+scale = Vector2(3.603125, 3.6000004)
+texture = ExtResource("5_besc8")
+
+[node name="OpponentPaddle" parent="." unique_id=1876749470 instance=ExtResource("2_2kbyd")]
+position = Vector2(80, 324)
+scale = Vector2(1, 1.103)
+script = ExtResource("3_j5del")
+is_player = false
+
+[node name="PlayerPaddle" parent="." unique_id=761265386 instance=ExtResource("2_2kbyd")]
+position = Vector2(1072, 324)
+scale = Vector2(1, 1.126)
+script = ExtResource("3_j5del")
+
+[node name="Ball" parent="." unique_id=1990000221 instance=ExtResource("1_re2vw")]
+position = Vector2(576, 324)
+scale = Vector2(4, 3.838)
+
+[node name="PlayerScore" type="Label" parent="." unique_id=2008125842]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="OpponentScore" type="Label" parent="." unique_id=2108133850]
+offset_right = 40.0
+offset_bottom = 23.0
