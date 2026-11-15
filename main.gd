@@ -26,12 +26,12 @@ var current_chapter: Node = null
 var transitioning := false
 
 func _ready() -> void:
-	print("MAIN RUNNING, title = ", GameManager.title_scene)
-	GameManager.main = self
+	print("MAIN RUNNING, title = ", _gm().title_scene)
+	_gm().main = self
 	_setup_overlays()
 	if fade_rect and FADE_TRANSITIONS:
 		fade_rect.modulate.a = 1.0           # start black, then fade into the title
-	var ok: bool = await load_chapter(GameManager.title_scene)
+	var ok: bool = await load_chapter(_gm().title_scene)
 	print("Title loaded: ", ok)
 	await _fade_to(0.0, 0.8)                 # always fade back in
 
@@ -39,7 +39,7 @@ func _ready() -> void:
 func _setup_overlays() -> void:
 	if color_fade:
 		color_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		if GameManager.SATURATION_EFFECT:
+		if _gm().SATURATION_EFFECT:
 			if color_fade.material == null:
 				var shader := Shader.new()
 				shader.code = COLOR_FADE_SHADER
@@ -112,3 +112,51 @@ func _show_caption(text: String) -> void:
 	t.tween_interval(1.2)
 	t.tween_property(caption_label, "modulate:a", 0.0, 0.4)
 	await t.finished
+
+# Chapter 2 -> 3 bypasses the black fade and caption. The 3D scene owns the reveal.
+func reveal_depth(path: String) -> void:
+	if transitioning:
+		return
+	transitioning = true
+	_gm().fx.stop_shake()
+	if fade_rect:
+		fade_rect.modulate.a = 0.0
+	if caption_label:
+		caption_label.modulate.a = 0.0
+	await load_chapter(path)
+	transitioning = false
+
+func reveal_breakout(path: String) -> void:
+	if transitioning:
+		return
+	transitioning = true
+	var layer := CanvasLayer.new()
+	layer.layer = 30
+	add_child(layer)
+	var picture := TextureRect.new()
+	picture.texture = _gm().transition_image
+	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	picture.stretch_mode = TextureRect.STRETCH_SCALE
+	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(picture)
+	picture.size = get_viewport().get_visible_rect().size
+	_gm().transition_image = null
+	if fade_rect:
+		fade_rect.modulate.a = 0.0
+	_gm().fx.buildup(1.4)
+	await load_chapter(path)
+	var sweep := create_tween().set_parallel(true)
+	sweep.tween_property(picture, "position:y", -picture.size.y, 1.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	sweep.tween_property(picture, "modulate:a", 0.0, 1.4)
+	await sweep.finished
+	layer.queue_free()
+	_gm().fx.reveal()
+	transitioning = false
+
+func _gm() -> Node:
+	var manager := get_node_or_null("/root/GameManager")
+	if manager == null:
+		manager = load("res://game_manager.gd").new()
+		manager.name = "GameManager"
+		get_tree().root.add_child(manager)
+	return manager

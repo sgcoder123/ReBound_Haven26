@@ -20,10 +20,11 @@ var serving := false
 var split_dir := Vector2.DOWN    # direction from half 0 to half 1
 
 func _ready() -> void:
+	_gm().fx.play_music()
 	screen_w = get_viewport_rect().size.x
 	center = get_viewport_rect().size / 2.0
-	final_round = GameManager.final_pong
-	GameManager.set_saturation(1.0)
+	final_round = _gm().final_pong
+	_gm().set_saturation(1.0)
 	if final_round:
 		opponent.ai_speed = 235.0
 		opponent.max_hits = 999
@@ -74,10 +75,12 @@ func _serve(dir_x: float, delay := 1.0) -> void:
 func _on_ball_hit_paddle(paddle: Node) -> void:
 	if ended:
 		return
+	_gm().fx.play_sfx("hit", -15.0)
+	_gm().fx.shake(1.5, 0.07)
 	if paddle == player and not final_round:
 		player.register_hit()
-	GameManager.fade_saturation(
-		minf(GameManager.saturation + PER_HIT, MAX_SATURATION), 0.3)
+	_gm().fade_saturation(
+		minf(_gm().saturation + PER_HIT, MAX_SATURATION), 0.3)
 
 func _update_score() -> void:
 	player_label.text = str(player_score)
@@ -91,13 +94,19 @@ func on_paddle_shatter() -> void:
 	ended = true
 	ball.set_physics_process(false)
 	opponent.set_physics_process(false)
-	GameManager.fade_saturation(0.0, 0.1)
+	_gm().fade_saturation(0.0, 0.1)
 
+	_gm().fx.play_sfx("break", -6.0, false)
+	_gm().fx.shake(12.0, 0.45)
 	var halves := _spawn_halves()
 	await _crack_open(halves)                     # shake and split apart
-	_drop_everything(halves)
-	await get_tree().create_timer(1.8).timeout    # let it all fall
-	GameManager.next_chapter()
+	var settle := create_tween().set_parallel(true)
+	var landing := Vector2(get_viewport_rect().size.x * 0.5, get_viewport_rect().size.y - 65.0)
+	for i in halves.size():
+		settle.tween_property(halves[i], "global_position", landing + Vector2(-40.0 if i == 0 else 40.0, 0), 1.1).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		settle.tween_property(halves[i], "rotation", PI * 0.5, 1.1)
+	await settle.finished
+	_gm().next_chapter()
 
 func _find_sprite(node: Node) -> Node2D:
 	for c in node.get_children():
@@ -221,4 +230,12 @@ func _finish_final(won: bool) -> void:
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if final_round and ended and event is InputEventKey and event.pressed and event.keycode == KEY_R:
-		GameManager.go_to_chapter(0)
+		_gm().go_to_chapter(0)
+
+func _gm() -> Node:
+	var manager := get_node_or_null("/root/GameManager")
+	if manager == null:
+		manager = load("res://game_manager.gd").new()
+		manager.name = "GameManager"
+		get_tree().root.add_child(manager)
+	return manager

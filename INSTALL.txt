@@ -1,1 +1,67 @@
-Copy these six .gd/.tscn files into the SAME folder as project.godot. Replace existing scripts. Delete old REBOUND_ONLY_NEW_FILES_FIXED subfolders. In Godot Project > Project Settings > Globals > Autoload, GameManager must point to res://game_manager.gd. This patch modifies original Pong, Breakout, paddle, manager and adds chapter 3. Last gap is deliberately beyond jump range; falling near the trophy returns to final Pong. Final Pong: first to 3, slower AI; press R to retry on loss. This patch has not been runtime-tested in Godot.
+RE:BOUND — LONGER 3D COURSE / MOVING HAZARDS / AUDIO FIX
+
+INSTALL
+1. Back up the project.
+2. Copy all SIX .gd files beside project.godot, replacing the matching files.
+3. Keep your existing .tscn files and paddle.gd. No character assets required.
+4. Let Godot finish importing, then run the whole game with F5.
+5. Click the running game and press F8 for an audio test.
+   F9 toggles background music. Read Output to see which sounds were found.
+
+CHANGES
+- 28 course platforms (previously five), plus the distant trophy island.
+- Moving platforms, sliding red obstacles, and rotating red bars.
+- Four checkpoints. Red hazards and early falls return to your latest checkpoint.
+- No floor/catch box below the course.
+- Only the last segment has the long fall: seven seconds before returning to
+  final Pong. It does not respawn endlessly or trap the player permanently.
+- R returns to the latest checkpoint during the course or final fall.
+- New rounded astronaut model: helmet, visor, eyes, suit, backpack, boots,
+  and moving arms and legs. Retains the ball-shaped head from the story.
+- Paddle halves pull apart and move toward the bottom center. The old Pong
+  arena sweeps upward while the Breakout paddle rebuilds underneath it.
+- Existing sideways 2D-to-3D camera reveal stays in place.
+
+AUDIO
+No audio downloads are required for basic playback: this patch generates its
+own simple music, beeps, impacts, and rising sound if files are missing.
+These are original synthesized sounds, not sampled recordings.
+The generated music is a basic placeholder, not the downloaded music track.
+
+To use your downloaded recordings, unzip them INSIDE the Godot project.
+The script recursively searches project folders for these names automatically:
+  music / 8-bit_last_mission (excluding intro)
+  hit / impactWood_light_000
+  break / impactGlass_heavy_000
+  brick / impactGlass_light_000
+  impact / impactMetal_heavy_000
+  jump / phaseJump1
+  riser / Cinematic_Riser_1_Reverb_Subtle
+Supported extensions: .ogg .wav .mp3. Keep the original extension.
+A downloaded ZIP sitting outside the project cannot be played by Godot.
+For ambiguous or different names, use the short names in assets/audio.
+
+If F8 is silent, check the OS output device/volume, Godot game audio mute, and
+Godot's Master audio bus. Output reports the Master mute and volume state.
+A new audio node/autoload is not required. GameManager creates the audio system.
+
+AUTOLOAD
+If you already have GameManager registered, keep it. Its path should be:
+  res://game_manager.gd
+If its entry is broken, fix it under Project Settings > Globals > Autoload.
+The updated main/chapter scripts look up the manager at runtime to avoid the
+previous identifier compilation errors; main creates it if genuinely missing.
+
+FILES (only new/changed scripts)
+  main.gd
+  game_manager.gd
+  rebound_fx.gd
+  chapter_1_pong.gd
+  chapter2_breakout.gd
+  chapter3_platformer.gd
+
+VALIDATION
+Godot 4.6.3 compile and automated headless checks of chapter progression,
+procedural audio resources, moving platform position, checkpoint activation,
+ordinary fall recovery, ending fall and return to final Pong.
+Full visual playtesting and your computer's audio output remain unverified.

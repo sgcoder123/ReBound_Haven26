@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://l02m0uk30t6r"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" uid="uid://56hx343lu7fj" path="res://chapter3_platformer.gd" id="1"]
+[ext_resource type="Script" path="res://chapter3_platformer.gd" id="1"]
 
-[node name="Chapter3Platformer" type="Node3D" unique_id=119815465]
+[node name="Chapter3Platformer" type="Node3D"]
 script = ExtResource("1")

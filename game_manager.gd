@@ -3,6 +3,14 @@ extends Node
 # Turn the black-and-white / color-rising effect on or off
 const SATURATION_EFFECT := false
 
+var fx: Node
+var transition_image: Texture2D
+
+func _ready() -> void:
+	fx = preload("res://rebound_fx.gd").new()
+	fx.name = "ReboundFX"
+	add_child(fx)
+
 var main: Node = null
 var chapter_index := 0
 var final_pong := false
@@ -53,6 +61,20 @@ func next_chapter() -> void:
 	print("next_chapter called, index = ", chapter_index, " of ", chapters.size())
 	if chapter_index >= chapters.size():
 		print("No more chapters in the list")
+		return
+	if chapter_index == 1 and main:
+		fx.stop_shake()
+		if DisplayServer.get_name() != "headless":
+			await RenderingServer.frame_post_draw
+			transition_image = ImageTexture.create_from_image(get_viewport().get_texture().get_image())
+		await main.reveal_breakout(chapters[chapter_index])
+		return
+	if chapter_index == 2 and main:
+		fx.stop_shake()
+		if DisplayServer.get_name() != "headless":
+			await RenderingServer.frame_post_draw
+			transition_image = ImageTexture.create_from_image(get_viewport().get_texture().get_image())
+		await main.reveal_depth(chapters[chapter_index])
 		return
 	if main:
 		main.change_chapter(chapters[chapter_index], _caption_for(chapter_index))
