@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://7kiwids3wfkh"]
+
+[ext_resource type="Script" uid="uid://oc7144ejdylu" path="res://breakout_paddle.gd" id="1_4twyh"]
+[ext_resource type="Texture2D" uid="uid://rwehu87ym8h7" path="res://Xnip2026-11-14_17-03-17-Photoroom.png" id="2_btpwi"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u2so0"]
+size = Vector2(534, 115.75)
+
+[node name="BreakoutPaddle" type="CharacterBody2D" unique_id=740434570]
+script = ExtResource("1_4twyh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=692121725]
+position = Vector2(-14, 4)
+shape = SubResource("RectangleShape2D_u2so0")
+
+[node name="paddle" type="Sprite2D" parent="." unique_id=1807319312]
+texture = ExtResource("2_btpwi")

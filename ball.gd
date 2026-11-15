@@ -32,9 +32,16 @@ func _physics_process(delta: float) -> void:
 	if c:
 		var other := c.get_collider()
 		if other.is_in_group("paddle"):
-			if hit_cooldown > 0.0:
-				return
-			hit_cooldown = 0.15
+			speed = minf(speed + speed_gain, max_speed)
+			if other.get("is_horizontal"):
+				var offset := clampf((global_position.x - other.global_position.x) / other.half_width, -1.0, 1.0)
+				var dir_y := -signf(velocity.y)
+				velocity = Vector2(offset * 0.8, dir_y).normalized() * speed
+			else:
+				var offset := clampf((global_position.y - other.global_position.y) / other.half_height, -1.0, 1.0)
+				var dir_x := -signf(velocity.x)
+				velocity = Vector2(dir_x, offset * 0.8).normalized() * speed
+			hit_paddle.emit(other)
 	if c:
 		var other := c.get_collider()
 		print("ball hit: ", other.name, " groups: ", other.get_groups())
@@ -47,6 +54,8 @@ func _physics_process(delta: float) -> void:
 			hit_paddle.emit(other)
 		else:
 			velocity = velocity.bounce(c.get_normal())
+			if other.has_method("hit"):
+				other.hit()
 
 	# Bounce off the top and bottom of the arena
 	if global_position.y - radius < top_bound and velocity.y < 0.0:

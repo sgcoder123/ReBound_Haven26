@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://vycxgia2vu40"]
+
+[ext_resource type="Texture2D" uid="uid://rrhwv2180omo" path="res://bg3.png" id="1_f0st3"]
+[ext_resource type="PackedScene" uid="uid://7kiwids3wfkh" path="res://breakout_paddle.tscn" id="1_p1yfx"]
+[ext_resource type="PackedScene" uid="uid://7ddwku1ij1i4" path="res://tile.tscn" id="2_03e23"]
+
+[node name="chapter2_pong" type="Node2D" unique_id=1513385185]
+
+[node name="Bg3" type="Sprite2D" parent="." unique_id=839496516]
+position = Vector2(576, 324)
+scale = Vector2(3.6000004, 3.5999997)
+texture = ExtResource("1_f0st3")
+
+[node name="Brick" parent="." unique_id=902746209 instance=ExtResource("2_03e23")]
+position = Vector2(520, 196.00002)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick2" parent="." unique_id=171113805 instance=ExtResource("2_03e23")]
+position = Vector2(411, 196)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick3" parent="." unique_id=1846390322 instance=ExtResource("2_03e23")]
+position = Vector2(627, 196.00002)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick4" parent="." unique_id=336530311 instance=ExtResource("2_03e23")]
+position = Vector2(736, 196.00002)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick5" parent="." unique_id=389653243 instance=ExtResource("2_03e23")]
+position = Vector2(466.00003, 253.00002)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick6" parent="." unique_id=1418196335 instance=ExtResource("2_03e23")]
+position = Vector2(576, 253.00002)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick7" parent="." unique_id=1854621231 instance=ExtResource("2_03e23")]
+position = Vector2(686, 253)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick8" parent="." unique_id=101111967 instance=ExtResource("2_03e23")]
+position = Vector2(522, 313)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick9" parent="." unique_id=1962800590 instance=ExtResource("2_03e23")]
+position = Vector2(632, 313)
+scale = Vector2(1.5, 1.5)
+
+[node name="Brick10" parent="." unique_id=1858679614 instance=ExtResource("2_03e23")]
+position = Vector2(580, 371)
+scale = Vector2(1.5, 1.5)
+
+[node name="BreakoutPaddle" parent="." unique_id=740434570 instance=ExtResource("1_p1yfx")]
+position = Vector2(588, 545)
+scale = Vector2(0.25, 0.25)
+collision_layer = 7
+collision_mask = 7

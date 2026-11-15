@@ -1,9 +1,25 @@
 [gd_scene format=3 uid="uid://yi4lh257bdal"]
 
-[node name="TitleScreen" type="Control" unique_id=2046960780]
+[ext_resource type="Script" uid="uid://dkhpjs6obtifx" path="res://title_screen.gd" id="1_ak2if"]
+[ext_resource type="Texture2D" uid="uid://cn70ahchydhyl" path="res://title.png" id="1_v6p8y"]
+
+[node name="TitleScreen" type="Control" unique_id=1125471187]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_ak2if")
+
+[node name="StartButton" type="Button" parent="." unique_id=487442946]
+layout_mode = 0
+offset_left = 344.0
+offset_top = 367.0
+offset_right = 828.0
+offset_bottom = 518.0
+
+[node name="title" type="Sprite2D" parent="." unique_id=1807899662]
+position = Vector2(575.5, 324)
+scale = Vector2(3.5968752, 3.5888891)
+texture = ExtResource("1_v6p8y")

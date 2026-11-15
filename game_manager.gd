@@ -11,7 +11,15 @@ var chapters := [
 
 var saturation := 0.0
 var _sat_tween: Tween
+var title_scene := "res://title_screen.tscn"
 
+func start_game() -> void:
+	chapter_index = 0
+	if main:
+		main.load_chapter(chapters[0])
+	else:
+		get_tree().change_scene_to_file(chapters[0])
+	
 func _color_fade() -> ColorRect:
 	return main.get_node("Overlay/ColorFade")
 
