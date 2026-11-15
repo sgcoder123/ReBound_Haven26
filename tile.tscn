@@ -24,7 +24,7 @@ script = ExtResource("1_vx4y2")
 position = Vector2(0.5, -1)
 shape = SubResource("RectangleShape2D_u2so0")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=30548798]
+[node name="brickanimated" type="AnimatedSprite2D" parent="." unique_id=30548798]
 position = Vector2(2.3841858e-07, 0)
 scale = Vector2(0.9655172, 0.94871795)
 sprite_frames = SubResource("SpriteFrames_u2so0")
